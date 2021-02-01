@@ -1,6 +1,6 @@
 {
   "name": "axios-ntlm",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "An NTLM auth extension to the Axios HTTP library",
   "main": "lib/ntlmClient.js",
   "types": "lib/ntlmClient.d.ts",
@@ -21,7 +21,7 @@
     "axios",
     "ntlm"
   ],
-  "homepage": "https://github.com/catbuttes/axios-ntlm#readme",
+  "homepage": "https://buttes.dev/axios-ntlm/",
   "devDependencies": {
     "@types/node": "^14.14.22",
     "@types/ntlm-client": "^0.1.0",
