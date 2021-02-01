@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import * as ntlm from 'ntlm-client'
+import * as ntlm from './ntlm';
 import * as https from 'https'
 import * as http from 'http'
 
