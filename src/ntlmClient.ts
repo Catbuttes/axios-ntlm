@@ -3,7 +3,7 @@ import * as ntlm from 'ntlm-client'
 import * as https from 'https'
 import * as http from 'http'
 
-/*
+/**
 * @param username The username of the user you are authenticating as.
 * @param password The password of the user you are authenticating as.
 * @param domain The domain of the user you are authenticating as.
