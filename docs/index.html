@@ -61,7 +61,7 @@
 				<a href="#axios-ntlm" id="axios-ntlm" style="color: inherit; text-decoration: none;">
 					<h1>Axios-NTLM</h1>
 				</a>
-				<p>This is a helper library for NTLM Authentication using the Axios HTTP library on Node. It attaches interceptors to an axios instance to authenticate using NTLM for any resources that offer it.</p>
+				<p>This is a helper library for NTLM Authentication using the <a href="https://github.com/axios/axios">Axios</a> HTTP library on Node. It attaches interceptors to an axios instance to authenticate using NTLM for any resources that offer it.</p>
 				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
 					<h2>Examples</h2>
 				</a>
@@ -74,7 +74,13 @@
 
 <span style="color: #000000">(</span><span style="color: #0000FF">async</span><span style="color: #000000"> () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
 
-<span style="color: #000000">    </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">client</span><span style="color: #000000"> = </span><span style="color: #795E26">NtlmClient</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;username&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;password&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;domain&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">credentials</span><span style="color: #000000">: </span><span style="color: #267F99">NtlmCredentials</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">        </span><span style="color: #001080">username:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;username&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #001080">password:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;password&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #001080">domain:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;domain&#039;</span>
+<span style="color: #000000">    }</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">client</span><span style="color: #000000"> = </span><span style="color: #795E26">NtlmClient</span><span style="color: #000000">(</span><span style="color: #001080">credentials</span><span style="color: #000000">)</span>
 
 <span style="color: #000000">    </span><span style="color: #AF00DB">try</span><span style="color: #000000"> {</span>
 <span style="color: #000000">        </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">resp</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #795E26">client</span><span style="color: #000000">({</span>
@@ -91,26 +97,32 @@
 <span style="color: #000000">})()</span>
 
 </code></pre>
-				<a href="#with-an-existing-client" id="with-an-existing-client" style="color: inherit; text-decoration: none;">
-					<h3>With an existing client</h3>
+				<a href="#with-a-custom-axios-config" id="with-a-custom-axios-config" style="color: inherit; text-decoration: none;">
+					<h3>With a custom Axios config</h3>
 				</a>
-				<p>This shows how to pass in an existing axios instance to have the NTLM Auth interceptors attached.</p>
-				<p><strong>Note:</strong> If doing this, be aware that http(s)Agents need to be attached to keep the connection alive. If there are none attached already, they will be added. If you are providing your own then you will need to set this up.</p>
-				<pre><code class="language-ts">
-<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">NtlmClient</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;axios-ntlm&#039;</span><span style="color: #000000">;</span>
+				<p>This shows how to pass in an axios config in the same way that you would when setting up any other axios instance. </p>
+				<p>Note: If doing this, be aware that http(s)Agents need to be attached to keep the connection alive. If there are none attached already, they will be added. If you are providing your own then you will need to set this up.</p>
+				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">AxiosRequestConfig</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;axios&#039;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">NtlmClient</span><span style="color: #000000">, </span><span style="color: #001080">NtlmCredentials</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;axios-ntlm&#039;</span><span style="color: #000000">;</span>
 
 <span style="color: #000000">(</span><span style="color: #0000FF">async</span><span style="color: #000000"> () </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-
-<span style="color: #000000">    </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">client</span><span style="color: #000000"> = </span><span style="color: #001080">axios</span><span style="color: #000000">.</span><span style="color: #795E26">create</span><span style="color: #000000">(</span><span style="color: #008000">/*Your options here*/</span><span style="color: #000000">)</span>
 <span style="color: #000000">    </span>
-<span style="color: #000000">    </span><span style="color: #001080">client</span><span style="color: #000000"> = </span><span style="color: #795E26">NtlmClient</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;username&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;password&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;domain&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;workstation&#039;</span><span style="color: #000000">, </span><span style="color: #001080">client</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">credentials</span><span style="color: #000000">: </span><span style="color: #267F99">NtlmCredentials</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">        </span><span style="color: #001080">username:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;username&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #001080">password:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;password&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #001080">domain:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;domain&#039;</span>
+<span style="color: #000000">    }</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">config</span><span style="color: #000000">: </span><span style="color: #267F99">AxiosRequestConfig</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">        </span><span style="color: #001080">baseURL:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;https://protected.site.example.com&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #001080">method:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;get&#039;</span>
+<span style="color: #000000">    }</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">client</span><span style="color: #000000"> = </span><span style="color: #795E26">NtlmClient</span><span style="color: #000000">(</span><span style="color: #001080">credentials</span><span style="color: #000000">, </span><span style="color: #001080">config</span><span style="color: #000000">)</span>
 
 <span style="color: #000000">    </span><span style="color: #AF00DB">try</span><span style="color: #000000"> {</span>
-<span style="color: #000000">        </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">resp</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #795E26">client</span><span style="color: #000000">({</span>
-<span style="color: #000000">            </span><span style="color: #001080">url:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;https://protected.site.example.com&#039;</span><span style="color: #000000">,</span>
-<span style="color: #000000">            </span><span style="color: #001080">method:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;get&#039;</span>
-<span style="color: #000000">        });</span>
-<span style="color: #000000">        </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">resp</span><span style="color: #000000">.</span><span style="color: #001080">data</span><span style="color: #000000">);</span>
+<span style="color: #000000">        </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">resp</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">client</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;/api/123&#039;</span><span style="color: #000000">)</span>
+<span style="color: #000000">        </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">resp</span><span style="color: #000000">);</span>
 <span style="color: #000000">    }</span>
 <span style="color: #000000">    </span><span style="color: #AF00DB">catch</span><span style="color: #000000"> (</span><span style="color: #001080">err</span><span style="color: #000000">) {</span>
 <span style="color: #000000">        </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">err</span><span style="color: #000000">)</span>
@@ -132,6 +144,9 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ntlmcredentials.html" class="tsd-kind-icon">Ntlm<wbr>Credentials</a>
+					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#ntlmclient" class="tsd-kind-icon">Ntlm<wbr>Client</a>
 					</li>
@@ -144,6 +159,9 @@
 	<div class="container">
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
 		</div>
 	</div>
 </footer>

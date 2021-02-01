@@ -1,6 +1,6 @@
 # Axios-NTLM
 
-This is a helper library for NTLM Authentication using the Axios HTTP library on Node. It attaches interceptors to an axios instance to authenticate using NTLM for any resources that offer it.
+This is a helper library for NTLM Authentication using the [Axios](https://github.com/axios/axios) HTTP library on Node. It attaches interceptors to an axios instance to authenticate using NTLM for any resources that offer it.
 
 ## Examples
 
@@ -14,7 +14,13 @@ import { NtlmClient } from 'axios-ntlm';
 
 (async () => {
 
-    let client = NtlmClient('username', 'password', 'domain')
+    let credentials: NtlmCredentials = {
+        username: 'username',
+        password: "password",
+        domain: 'domain'
+    }
+
+    let client = NtlmClient(credentials)
 
     try {
         let resp = await client({
@@ -31,28 +37,34 @@ import { NtlmClient } from 'axios-ntlm';
 })()
 
 ```
-### With an existing client
+### With a custom Axios config
 
-This shows how to pass in an existing axios instance to have the NTLM Auth interceptors attached.
+This shows how to pass in an axios config in the same way that you would when setting up any other axios instance. 
 
-**Note:** If doing this, be aware that http(s)Agents need to be attached to keep the connection alive. If there are none attached already, they will be added. If you are providing your own then you will need to set this up.
+Note: If doing this, be aware that http(s)Agents need to be attached to keep the connection alive. If there are none attached already, they will be added. If you are providing your own then you will need to set this up.
 
 ```ts
-
-import { NtlmClient } from 'axios-ntlm';
+import { AxiosRequestConfig } from 'axios';
+import { NtlmClient, NtlmCredentials } from 'axios-ntlm';
 
 (async () => {
-
-    let client = axios.create(/*Your options here*/)
     
-    client = NtlmClient('username', 'password', 'domain', 'workstation', client)
+    let credentials: NtlmCredentials = {
+        username: 'username',
+        password: "password",
+        domain: 'domain'
+    }
+
+    let config: AxiosRequestConfig = {
+        baseURL: 'https://protected.site.example.com',
+        method: 'get'
+    }
+
+    let client = NtlmClient(credentials, config)
 
     try {
-        let resp = await client({
-            url: 'https://protected.site.example.com',
-            method: 'get'
-        });
-        console.log(resp.data);
+        let resp = await client.get('/api/123')
+        console.log(resp);
     }
     catch (err) {
         console.log(err)
