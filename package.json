@@ -10,6 +10,14 @@
   },
   "author": "CatButtes",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/catbuttes/axios-ntlm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/catbuttes/axios-ntlm/issues"
+  },
+  "homepage": "https://github.com/catbuttes/axios-ntlm#readme",
   "devDependencies": {
     "@types/node": "^14.14.22",
     "@types/ntlm-client": "^0.1.0",
