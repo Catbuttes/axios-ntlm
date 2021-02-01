@@ -1,15 +1,24 @@
-import { NtlmClient } from '../lib/ntlmClient';
+import { AxiosRequestConfig } from 'axios';
+import { NtlmClient, NtlmCredentials } from '../lib/ntlmClient';
 
 (async () => {
     
-    let client = NtlmClient('username', 'password', 'domain')
+    let credentials: NtlmCredentials = {
+        username: 'username',
+        password: "password",
+        domain: 'domain'
+    }
+
+    let config: AxiosRequestConfig = {
+        baseURL: 'https://protected.site.example.com',
+        method: 'get'
+    }
+
+    let client = NtlmClient(credentials, config)
 
     try {
-        let resp = await client({
-            url: 'https://protected.site.example.com',
-            method: 'get'
-        });
-        console.log(resp.data);
+        let resp = await client.get('')
+        console.log(resp);
     }
     catch (err) {
         console.log(err)
