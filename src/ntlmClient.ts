@@ -42,7 +42,6 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
 
         if (error && error.status === 401
             && error.headers['www-authenticate']
-            && error.headers['www-authenticate'].includes('Negotiate') 
             && error.headers['www-authenticate'].includes('NTLM')
             // This length check is a hack because SharePoint is awkward and will 
             // include the Negotiate option when responding with the T2 message
@@ -60,13 +59,7 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
         }
         else if (error && error.status === 401
             && error.headers['www-authenticate']
-            && (!error.headers['www-authenticate'].includes('Negotiate') 
-                // This length check is a hack because SharePoint is awkward and will 
-                // include the Negotiate option when responding with the T2 message
-                // There is more we could do to ensure we are processing correctly,
-                // but this is the easiest option for now
-                || error.headers['www-authenticate'].length > 50
-            )
+            && error.headers['www-authenticate'].length > 50
             && error.headers['www-authenticate'].includes('NTLM')) {
             
             let t2Msg = ntlm.decodeType2Message((error.headers['www-authenticate'].match(/^NTLM\s+(.+?)(,|\s+|$)/) || [])[1]);
