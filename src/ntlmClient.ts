@@ -3,6 +3,8 @@ import * as ntlm from './ntlm';
 import * as https from 'https'
 import * as http from 'http'
 
+export {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse};
+
 /**
  * @property username The username of the user you are authenticating as.
  * @property password The password of the user you are authenticating as.
