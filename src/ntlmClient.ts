@@ -75,7 +75,7 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
             return resp;
         }
         else {
-            return error;
+            return err;
         }
     });
 
