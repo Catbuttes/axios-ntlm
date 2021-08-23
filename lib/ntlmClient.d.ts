@@ -1,4 +1,5 @@
-import { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+export { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse };
 /**
  * @property username The username of the user you are authenticating as.
  * @property password The password of the user you are authenticating as.
