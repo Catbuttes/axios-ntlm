@@ -68,6 +68,7 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
             
             let t3Msg = ntlm.createType3Message(t2Msg, credentials.username, credentials.password, credentials.workstation!, credentials.domain);
 
+            error.config.headers["X-retry"] = "false";
             error.config.headers["Authorization"] = t3Msg;
 
             let resp = client(error.config);
