@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as ntlm from './ntlm';
-import * as https from 'https'
-import * as http from 'http'
+import * as https from 'https';
+import * as http from 'http';
+import devnull from 'dev-null';
 
 export {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse};
 
@@ -35,46 +36,52 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
         config.httpsAgent = new https.Agent({keepAlive: true}); 
     }
 
-    let client = axios.create(config);
+    const client = axios.create(config);
 
     client.interceptors.response.use((response) => {
         return response;
-    }, (err:AxiosError) => {
-        let error: AxiosResponse|undefined = err.response;
+    }, async (err:AxiosError) => {
+        const error: AxiosResponse|undefined = err.response;
 
         if (error && error.status === 401
             && error.headers['www-authenticate']
-            && error.headers['www-authenticate'].includes('NTLM')
-            // This length check is a hack because SharePoint is awkward and will 
+            && error.headers['www-authenticate'].includes('NTLM')){
+
+            // This length check is a hack because SharePoint is awkward and will
             // include the Negotiate option when responding with the T2 message
             // There is nore we could do to ensure we are processing correctly,
             // but this is the easiest option for now
-            && error.headers['www-authenticate'].length < 50
-            && !err.config.headers['X-retry']) {
+            if (error.headers['www-authenticate'].length < 50){
+                const t1Msg = ntlm.createType1Message(credentials.workstation!, credentials.domain);
 
-            let t1Msg = ntlm.createType1Message(credentials.workstation!, credentials.domain);
+                error.config.headers["Authorization"] = t1Msg;
 
-            error.config.headers["Authorization"] = t1Msg;
-            let resp = client(error.config);
+            }
+            else {
+                const t2Msg = ntlm.decodeType2Message((error.headers['www-authenticate'].match(/^NTLM\s+(.+?)(,|\s+|$)/) || [])[1]);
 
-            return resp;
+                const t3Msg = ntlm.createType3Message(t2Msg, credentials.username, credentials.password, credentials.workstation!, credentials.domain);
+
+                error.config.headers["X-retry"] = "false";
+                error.config.headers["Authorization"] = t3Msg;
+            }
+
+            if (error.config.responseType === "stream"){
+                const stream: http.IncomingMessage | undefined = err.response?.data;
+                // Read Stream is holding HTTP connection open in our
+                // TCP socket. Close stream to recycle back to the Agent.
+                if (stream && !stream.readableEnded) {
+                    await new Promise<void>(resolve => {
+                        stream.pipe(devnull());
+                        stream.once('close', resolve);
+                    });
+                }
+            }
+
+            return client(error.config);
         }
-        else if (error && error.status === 401
-            && error.headers['www-authenticate']
-            && error.headers['www-authenticate'].length > 50
-            && error.headers['www-authenticate'].includes('NTLM')) {
-            
-            let t2Msg = ntlm.decodeType2Message((error.headers['www-authenticate'].match(/^NTLM\s+(.+?)(,|\s+|$)/) || [])[1]);
-            
-            let t3Msg = ntlm.createType3Message(t2Msg, credentials.username, credentials.password, credentials.workstation!, credentials.domain);
 
-            error.config.headers["X-retry"] = "false";
-            error.config.headers["Authorization"] = t3Msg;
 
-            let resp = client(error.config);
-
-            return resp;
-        }
         else {
             throw err;
         }
