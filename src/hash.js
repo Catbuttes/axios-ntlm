@@ -4,6 +4,7 @@
 
 const crypto = require('crypto');
 const desjs = require('des.js');
+const md4 = require('js-md4');
 
 function createLMResponse(challenge, lmhash) {
 	let buf = new Buffer.alloc(24),
@@ -77,9 +78,9 @@ function createNTLMResponse(challenge, ntlmhash) {
 }
 
 function createNTLMHash(password) {
-	let md4sum = crypto.createHash('md4');
+	let md4sum = md4.create();
 	md4sum.update(new Buffer.from(password, 'ucs2'));
-	return md4sum.digest();
+	return md4sum.buffer();
 }
 
 function createNTLMv2Hash(ntlmhash, username, authTargetName) {
