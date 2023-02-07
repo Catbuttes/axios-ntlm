@@ -3,6 +3,8 @@
 // Original source at https://github.com/elasticio/node-ntlm-client/blob/master/lib/hash.js
 
 const crypto = require('crypto');
+const desjs = require('des.js');
+const md4 = require('js-md4');
 
 function createLMResponse(challenge, lmhash) {
 	let buf = new Buffer.alloc(24),
@@ -58,7 +60,7 @@ function calculateDES(key, message) {
 		desKey[i] |= (parity % 2) === 0 ? 1 : 0;
 	}
 
-	let des = crypto.createCipheriv('DES-ECB', desKey, '');
+	const des = des.DES.create({type: 'encrypt', ley: desKey});
 	return des.update(message);
 }
 
@@ -76,9 +78,9 @@ function createNTLMResponse(challenge, ntlmhash) {
 }
 
 function createNTLMHash(password) {
-	let md4sum = crypto.createHash('md4');
+	let md4sum = md4.create();
 	md4sum.update(new Buffer.from(password, 'ucs2'));
-	return md4sum.digest();
+	return md4sum.buffer();
 }
 
 function createNTLMv2Hash(ntlmhash, username, authTargetName) {
