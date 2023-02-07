@@ -4,7 +4,7 @@ import * as https from 'https';
 import * as http from 'http';
 import devnull from 'dev-null';
 
-export {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse};
+export { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse };
 
 /**
  * @property username The username of the user you are authenticating as.
@@ -25,27 +25,27 @@ export interface NtlmCredentials {
 *
 * @returns This function returns an axios instance configured to use the provided credentials
 */
-export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequestConfig, ): AxiosInstance {
-    let config: AxiosRequestConfig = AxiosConfig??{}
+export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequestConfig,): AxiosInstance {
+    let config: AxiosRequestConfig = AxiosConfig ?? {}
 
-    if(!config.httpAgent) {
-        config.httpAgent = new http.Agent({keepAlive: true}); 
+    if (!config.httpAgent) {
+        config.httpAgent = new http.Agent({ keepAlive: true });
     }
 
-    if(!config.httpsAgent) {
-        config.httpsAgent = new https.Agent({keepAlive: true}); 
+    if (!config.httpsAgent) {
+        config.httpsAgent = new https.Agent({ keepAlive: true });
     }
 
     const client = axios.create(config);
 
     client.interceptors.response.use((response) => {
         return response;
-    }, async (err:AxiosError) => {
-        const error: AxiosResponse|undefined = err.response;
+    }, async (err: AxiosError<any, any>) => {
+        const error: AxiosResponse | undefined = err.response;
 
         if (error && error.status === 401
             && error.headers['www-authenticate']
-            && error.headers['www-authenticate'].includes('NTLM')){
+            && error.headers['www-authenticate'].includes('NTLM')) {
 
             // The header may look like this: `Negotiate, NTLM, Basic realm="itsahiddenrealm.example.net"`
             // so extract the 'NTLM' part first
@@ -55,13 +55,13 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
             // include the Negotiate option when responding with the T2 message
             // There is nore we could do to ensure we are processing correctly,
             // but this is the easiest option for now
-            if (ntlmheader.length < 50){
+            if (!error.config.headers) { error.config.headers = {} }
+            if (ntlmheader.length < 50) {
                 const t1Msg = ntlm.createType1Message(credentials.workstation!, credentials.domain);
 
                 error.config.headers["Authorization"] = t1Msg;
 
-            }
-            else {
+            } else {
                 const t2Msg = ntlm.decodeType2Message((ntlmheader.match(/^NTLM\s+(.+?)(,|\s+|$)/) || [])[1]);
 
                 const t3Msg = ntlm.createType3Message(t2Msg, credentials.username, credentials.password, credentials.workstation!, credentials.domain);
@@ -70,7 +70,7 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
                 error.config.headers["Authorization"] = t3Msg;
             }
 
-            if (error.config.responseType === "stream"){
+            if (error.config.responseType === "stream") {
                 const stream: http.IncomingMessage | undefined = err.response?.data;
                 // Read Stream is holding HTTP connection open in our
                 // TCP socket. Close stream to recycle back to the Agent.
@@ -83,14 +83,10 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
             }
 
             return client(error.config);
-        }
-
-
-        else {
+        } else {
             throw err;
         }
     });
 
     return client;
-    
 }
