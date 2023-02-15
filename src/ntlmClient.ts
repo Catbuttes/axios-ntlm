@@ -45,7 +45,8 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
 
         if (error && error.status === 401
             && error.headers['www-authenticate']
-            && error.headers['www-authenticate'].includes('NTLM')) {
+            && error.headers['www-authenticate'].includes('NTLM')
+            && (!error.config.headers['X-retry'] || error.config.headers['X-retry'] !== 'false')) {
 
             // The header may look like this: `Negotiate, NTLM, Basic realm="itsahiddenrealm.example.net"`
             // so extract the 'NTLM' part first
