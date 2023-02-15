@@ -50,13 +50,13 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
 
             // The header may look like this: `Negotiate, NTLM, Basic realm="itsahiddenrealm.example.net"`
             // so extract the 'NTLM' part first
-            const ntlmheader = error.headers['www-authenticate'].split(',').find(_ => _.match(/ *NTLM/))?.trim() || '';
+            const ntlmheader = error.headers['www-authenticate'].split(',').find((header: string) => header.match(/ *NTLM/))?.trim() || '';
 
             // This length check is a hack because SharePoint is awkward and will
             // include the Negotiate option when responding with the T2 message
             // There is nore we could do to ensure we are processing correctly,
             // but this is the easiest option for now
-            if (!error.config.headers) { error.config.headers = {} }
+            if (!error.config.headers) { error.config.headers = <any>{} }
             if (ntlmheader.length < 50) {
                 const t1Msg = ntlm.createType1Message(credentials.workstation!, credentials.domain);
 
