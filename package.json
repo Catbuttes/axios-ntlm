@@ -1,6 +1,6 @@
 {
   "name": "axios-ntlm",
-  "version": "1.4.4",
+  "version": "1.4.3",
   "description": "An NTLM auth extension to the Axios HTTP library",
   "main": "lib/ntlmClient.js",
   "types": "lib/ntlmClient.d.ts",
