@@ -27,11 +27,11 @@
   ],
   "homepage": "https://buttes.dev/axios-ntlm/",
   "devDependencies": {
-    "@types/node": "^18.19.26",
+    "@types/node": "^18.19.70",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "axios": "^1.6.8",
+    "axios": "^1.7.9",
     "des.js": "^1.1.0",
     "dev-null": "^0.1.1",
     "js-md4": "^0.3.2"
