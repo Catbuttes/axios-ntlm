@@ -4,6 +4,9 @@
   "description": "An NTLM auth extension to the Axios HTTP library",
   "main": "lib/ntlmClient.js",
   "types": "lib/ntlmClient.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
