@@ -80,7 +80,7 @@ function createNTLMResponse(challenge, ntlmhash) {
 function createNTLMHash(password) {
 	let md4sum = md4.create();
 	md4sum.update(new Buffer.from(password, 'ucs2'));
-	return md4sum.buffer();
+	return Buffer.from(md4sum.buffer());
 }
 
 function createNTLMv2Hash(ntlmhash, username, authTargetName) {
