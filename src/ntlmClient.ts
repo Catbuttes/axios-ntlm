@@ -2,8 +2,6 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } f
 import * as ntlm from './ntlm';
 import * as https from 'https';
 import * as http from 'http';
-import devnull from 'dev-null';
-
 export { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse };
 
 /**
@@ -77,7 +75,7 @@ export function NtlmClient(credentials: NtlmCredentials, AxiosConfig?: AxiosRequ
                 // TCP socket. Close stream to recycle back to the Agent.
                 if (stream && !stream.readableEnded) {
                     await new Promise<void>(resolve => {
-                        stream.pipe(devnull());
+                        stream.resume();
                         stream.once('close', resolve);
                     });
                 }
