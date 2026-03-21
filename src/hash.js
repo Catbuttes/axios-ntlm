@@ -33,8 +33,8 @@ function createLMHash(password) {
 	pwBuffer.write(password.toUpperCase(), 0, 'ascii');
 
 	return Buffer.concat([
-			calculateDES(pwBuffer.slice(0, 7), magicKey),
-			calculateDES(pwBuffer.slice(7), magicKey)
+		calculateDES(pwBuffer.slice(0, 7), magicKey),
+		calculateDES(pwBuffer.slice(7), magicKey)
 	]);
 }
 
@@ -60,7 +60,7 @@ function calculateDES(key, message) {
 		desKey[i] |= (parity % 2) === 0 ? 1 : 0;
 	}
 
-	const des = des.DES.create({type: 'encrypt', ley: desKey});
+	const des = desjs.DES.create({ type: 'encrypt', key: desKey });
 	return des.update(message);
 }
 
